@@ -8,6 +8,8 @@ import {
 } from 'firebase/auth';
 import { FIREBASE_AUTH } from 'utils/firebase';
 
+import { storeData } from './storage.service';
+
 export interface AuthResult {
   success: boolean;
   response: UserCredential | AuthError;
@@ -18,7 +20,6 @@ const auth = FIREBASE_AUTH;
 export async function signInService(email: string, password: string): Promise<AuthResult> {
   try {
     const res: UserCredential | AuthError = await signInWithEmailAndPassword(auth, email, password);
-    console.log('Respuesta en signIn: ', res);
     return {
       success: true,
       response: res as UserCredential,

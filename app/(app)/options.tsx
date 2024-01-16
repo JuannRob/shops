@@ -1,7 +1,8 @@
 import { router } from 'expo-router';
-import { useAuth } from 'hooks/useAuth';
 import { StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+
+import { useAuth } from '../../context/auth.context';
 
 export default function Options() {
   const { user, signOutContext } = useAuth();
