@@ -1,6 +1,6 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Redirect, Tabs } from 'expo-router';
-import { ComponentProps, useEffect, useState } from 'react';
+import { ComponentProps } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import { useAuth } from '../../context/auth.context';
@@ -15,36 +15,15 @@ function TabBarIcon(props: TabBarIconProps) {
 }
 
 export default function TabLayout() {
-  const { isLoading, isAuth } = useAuth();
-  const [appInitializing, setAppInitializing] = useState(true);
+  const { currentUser, isLoading } = useAuth();
 
-  useEffect(() => {
-    const initializeApp = () => {
-      // Marca la aplicación como inicializada después de 2 segundos (ajusta según tus necesidades)
-      const timer = setTimeout(() => {
-        setAppInitializing(false);
-      }, 2000);
-
-      // Limpia el temporizador al desmontar el componente
-      return () => clearTimeout(timer);
-    };
-
-    initializeApp();
-  }, []);
-
-  if (isLoading || appInitializing) {
-    console.log('cargando..');
-
+  if (isLoading) {
     return <ActivityIndicator size="large" color="black" />;
   }
 
-  if (!isLoading && !isAuth) {
-    console.log('Estoy en login');
-
+  if (!isLoading && currentUser === null) {
     return <Redirect href="/(auth)/sign-in" />;
   }
-
-  console.log('mando tabs');
 
   return (
     <Tabs

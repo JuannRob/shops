@@ -1,17 +1,17 @@
+import { useAuth } from 'context/auth.context';
 import { router } from 'expo-router';
-import { useAuth } from 'hooks/useAuth';
 import { useRef } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 export default function SignUpScreen() {
-  const { signUpContext } = useAuth();
+  const { signUp } = useAuth();
 
   const emailRef = useRef<string>('');
   const passwordRef = useRef<string>('');
   const displayNameRef = useRef<string>('');
 
   const handleRegister = async () => {
-    const { response, success } = await signUpContext(
+    const { response, success } = await signUp(
       emailRef.current,
       passwordRef.current,
       displayNameRef.current

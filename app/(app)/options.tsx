@@ -5,18 +5,18 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useAuth } from '../../context/auth.context';
 
 export default function Options() {
-  const { user, signOutContext } = useAuth();
+  const { currentUser, signOut } = useAuth();
 
   const handleLogout = async () => {
-    await signOutContext();
+    await signOut();
     router.replace('/');
   };
 
   return (
     <View style={styles.container}>
-      <Text>{user?.uid}</Text>
-      <Text>{user?.displayName}</Text>
-      <Text>{user?.email}</Text>
+      <Text>{currentUser?.uid}</Text>
+      <Text>{currentUser?.displayName}</Text>
+      <Text>{currentUser?.email}</Text>
       <TouchableOpacity onPress={handleLogout} style={styles.loginBtn}>
         <Text style={styles.loginText}>LOGOUT</Text>
       </TouchableOpacity>

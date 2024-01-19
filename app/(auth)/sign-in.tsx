@@ -1,16 +1,17 @@
 import { router } from 'expo-router';
-import { useAuth } from 'hooks/useAuth';
 import { useRef } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 
+import { useAuth } from '../../context/auth.context';
+
 export default function SignInScreen() {
-  const { signInContext } = useAuth();
+  const { signIn } = useAuth();
 
   const emailRef = useRef<string>('');
   const passwordRef = useRef<string>('');
 
   const handleLogin = async () => {
-    const { response, success } = await signInContext(emailRef.current, passwordRef.current);
+    const { response, success } = await signIn(emailRef.current, passwordRef.current);
     if (success) {
       router.replace('/');
     } else {

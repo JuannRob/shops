@@ -1,17 +1,16 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getItemFor, removeItemFor, storeData } from 'services/storage.service';
+import { removeItemFor, storeData } from 'services/storage.service';
 
 import { signInService, signUpService, signOutService, AuthResult } from '../services/user.service';
 import FirebaseUser from '../ts/interfaces/user.interface';
 
 interface AuthContextProps {
-  user: FirebaseUser | null; // Change the type accordingly
-  isAuth: boolean;
+  currentUser: FirebaseUser | null; // Change the type accordingly
   isLoading: boolean;
-  signInContext: (email: string, password: string) => Promise<AuthResult>;
-  signUpContext: (email: string, password: string, displayName: string) => Promise<AuthResult>;
-  signOutContext: () => Promise<void>;
+  signIn: (email: string, password: string) => Promise<AuthResult>;
+  signUp: (email: string, password: string, displayName: string) => Promise<AuthResult>;
+  signOut: () => Promise<void>;
 }
 
 interface ProviderProps {
@@ -30,140 +29,43 @@ export const useAuth = () => {
 };
 
 const auth = getAuth();
-
 export const Provider = (props: ProviderProps) => {
-  const [state, setState] = useState({
-    user: null as FirebaseUser | null,
-    isAuth: false,
-    isLoading: false,
+  const [userState, setUserState] = useState({
+    currentUser: null as FirebaseUser | null,
+    isLoading: true,
   });
 
   useEffect(() => {
-    // Función asincrónica para cargar el usuario desde AsyncStorage
-    const loadUserFromStorage = async () => {
-      try {
-        const userString = await getItemFor('userCredential');
-        if (userString) {
-          console.log('userString: ', userString);
-
-          const parsedUser: FirebaseUser = JSON.parse(userString);
-          setState((prevState) => ({
-            ...prevState,
-            user: parsedUser,
-            isAuth: true,
-            isLoading: false,
-          }));
-        }
-      } catch (error) {
-        console.error('Error al cargar el usuario desde AsyncStorage:', error);
-        setState((prevState) => ({
-          ...prevState,
-          isLoading: false,
-        }));
-      }
-    };
-
-    // Llama a la función para cargar el usuario desde AsyncStorage
-    loadUserFromStorage();
-  }, []);
-
-  useEffect(() => {
-    // onAuthStateChanged para gestionar cambios en la autenticación
     const unsubscribe = onAuthStateChanged(auth, (currentUser: FirebaseUser | null) => {
       if (currentUser !== null) {
         storeData('userCredential', JSON.stringify(currentUser));
-        setState((prevState) => ({
+        setUserState((prevState) => ({
           ...prevState,
-          user: currentUser,
-          isAuth: true,
+          currentUser: currentUser as FirebaseUser,
           isLoading: false,
         }));
       } else {
-        setState((prevState) => ({
+        removeItemFor('userCredential');
+        setUserState((prevState) => ({
           ...prevState,
-          user: null,
-          isAuth: false,
+          currentUser: null,
           isLoading: false,
         }));
       }
     });
 
-    // Limpieza del efecto
-    return () => unsubscribe();
-  }, []);
-
-  const login = async (email: string, password: string): Promise<AuthResult> => {
-    setState((prevState) => ({
-      ...prevState,
-      isLoading: true,
-    }));
-    const response: AuthResult = await signInService(email, password);
-
-    if ('user' in response.response) {
-      const userFromCredential: FirebaseUser = response.response.user;
-      setState((prevState) => ({
-        ...prevState,
-        isLoading: false,
-        isAuth: response.success,
-        user: userFromCredential,
-      }));
-    } else {
-      setState((prevState) => ({
-        ...prevState,
-        isLoading: false,
-        isAuth: response.success,
-      }));
-    }
-
-    return response;
-  };
-
-  const register = async (
-    email: string,
-    password: string,
-    displayName: string
-  ): Promise<AuthResult> => {
-    setState((prevState) => ({
-      ...prevState,
-      isLoading: true,
-    }));
-    const response = await signUpService(email, password, displayName);
-    setState((prevState) => ({
-      ...prevState,
-      isLoading: false,
-    }));
-    return response;
-  };
-
-  const logout = async (): Promise<void> => {
-    await signOutService();
-    removeItemFor('userCredential');
-    setState((prevState) => ({
-      ...prevState,
-      isAuth: false,
-    }));
-  };
-
-  useEffect(() => {
-    if (state.user) {
-      console.log('User state: ', state.user);
-
-      setState((prevState) => ({
-        ...prevState,
-        isLoading: false,
-      }));
-    }
-  }, [state.user]);
+    return unsubscribe;
+  }, [userState.currentUser]);
 
   return (
     <AuthContext.Provider
       value={{
-        ...state,
-        signInContext: login,
-        signUpContext: register,
-        signOutContext: logout,
+        ...userState,
+        signIn: signInService,
+        signUp: signUpService,
+        signOut: signOutService,
       }}>
-      {props.children}
+      {!userState.isLoading && props.children}
     </AuthContext.Provider>
   );
 };

@@ -8,8 +8,6 @@ import {
 } from 'firebase/auth';
 import { FIREBASE_AUTH } from 'utils/firebase';
 
-import { storeData } from './storage.service';
-
 export interface AuthResult {
   success: boolean;
   response: UserCredential | AuthError;

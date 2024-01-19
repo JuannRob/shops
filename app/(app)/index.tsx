@@ -1,5 +1,5 @@
 import SmallShopCard from 'components/SmallShopCard';
-import { useAuth } from 'hooks/useAuth';
+import { useAuth } from 'context/auth.context';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { IProductEntity, TApiResponse } from 'ts/interfaces/api.interface';
 
@@ -7,7 +7,7 @@ import { useFetch } from '../../hooks/useFetch';
 
 export default function Home() {
   const data: TApiResponse = useFetch('https://dummyjson.com/products');
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
 
   if (data.error) {
     return (
@@ -22,7 +22,7 @@ export default function Home() {
       {data.loading && <ActivityIndicator size="large" color="black" />}
       {!data.loading && (
         <>
-          <Text>{user?.displayName}</Text>
+          <Text>{currentUser?.displayName}</Text>
           <FlatList
             showsHorizontalScrollIndicator={false}
             ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
