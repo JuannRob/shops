@@ -8,7 +8,7 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.welcome}>Welcome, {currentUser?.fullName}</Text>
+      <Text style={{ fontSize: 20 }}>Welcome, {currentUser?.displayName}</Text>
       <Text>You can start editing your app!</Text>
     </View>
   );
@@ -20,8 +20,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 10,
     flex: 1,
-  },
-  welcome: {
-    fontSize: 20,
   },
 });

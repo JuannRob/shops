@@ -25,7 +25,6 @@ export async function signInService(email: string, password: string): Promise<Au
       response: res as UserCredential,
     };
   } catch (error) {
-    console.log('Error en signIn: ', error);
     return {
       success: false,
       response: error as AuthError,
@@ -49,14 +48,11 @@ export async function signUpService(
     const user: User = res.user;
     await updateProfile(user, { displayName });
     await saveNewUser({ ...user, phoneNumber: phoneNumber });
-
-    console.log('Respuesta en signUp: ', res);
     return {
       success: true,
       response: res as UserCredential,
     };
   } catch (error) {
-    console.log('Error en signUp: ', error);
     return {
       success: false,
       response: error as AuthError,
@@ -67,8 +63,7 @@ export async function signUpService(
 export async function signOutService(): Promise<void> {
   try {
     signOut(auth);
-    console.log('Respuesta en signOut: ', 'Sesión finalizada');
   } catch (error) {
-    console.log('Error en signUp: ', error);
+    console.error('Sign out error: ', error);
   }
 }

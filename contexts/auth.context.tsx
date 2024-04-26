@@ -2,10 +2,9 @@ import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { removeItemFor, storeData } from 'services/storage.service';
 import { signInService, signUpService, signOutService, AuthResult } from '../services/auth.service';
-import { IFirestoreUser } from 'ts/interfaces/user.interface';
 
 interface AuthContextProps {
-  currentUser: IFirestoreUser | null;
+  currentUser: User | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<AuthResult>;
   signUp: (
@@ -35,7 +34,7 @@ export const useAuth = () => {
 const auth = getAuth();
 export const Provider = (props: ProviderProps) => {
   const [userState, setUserState] = useState({
-    currentUser: null as IFirestoreUser | null,
+    currentUser: null as User | null,
     isLoading: true,
   });
 
@@ -46,7 +45,7 @@ export const Provider = (props: ProviderProps) => {
         storeData('userCredential', JSON.stringify(currentUser));
         setUserState((prevState) => ({
           ...prevState,
-          currentUser: currentUser as IFirestoreUser,
+          currentUser: currentUser as User,
           isLoading: false,
         }));
       } else {

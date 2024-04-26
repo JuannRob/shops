@@ -74,14 +74,14 @@ export default function SignUpScreen() {
         />
       </View>
 
-      <TouchableOpacity onPress={handleRegister} style={styles.loginBtn}>
-        <Text style={styles.loginText}>REGISTER</Text>
+      <TouchableOpacity onPress={handleRegister} style={styles.signupBtn}>
+        <Text style={styles.signupText}>REGISTER</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
           router.push('/(auth)/sign-in');
         }}>
-        <Text style={styles.forgotAndSignUpText}>Sign-in</Text>
+        <Text style={styles.signin}>Sign-in</Text>
       </TouchableOpacity>
     </View>
   );
@@ -113,11 +113,11 @@ const styles = StyleSheet.create({
     height: 50,
     color: '#182c53',
   },
-  forgotAndSignUpText: {
+  signin: {
     color: '#eff8ff',
     fontSize: 14,
   },
-  loginBtn: {
+  signupBtn: {
     width: '80%',
     backgroundColor: '#eff8ff',
     borderRadius: 25,
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 10,
   },
-  loginText: {
+  signupText: {
     color: '#182c53',
   },
 });

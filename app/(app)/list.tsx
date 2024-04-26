@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { ShopsResponse, getShops } from 'services/db/shop.service';
 import { IShop } from 'ts/interfaces/shop.interface';
+
+import ShopCard from 'components/ShopCard';
 
 export default function List() {
   const [shops, setShops] = useState<IShop[]>([]);
@@ -17,10 +18,9 @@ export default function List() {
     fetchShops()
       .then((res) => {
         const shopsArr = res.response as IShop[];
-        console.log(shopsArr);
         setShops(shopsArr);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => console.error(e));
   }, []);
 
   return (
@@ -34,13 +34,7 @@ export default function List() {
             ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
             data={shops}
             keyExtractor={(item) => item.uid}
-            renderItem={({ item }) => (
-              <TouchableOpacity>
-                <Text>{item.name}</Text>
-                <Text>{item.contactInfo}</Text>
-                <Text>{item.description}</Text>
-              </TouchableOpacity>
-            )}
+            renderItem={({ item }) => <ShopCard shopItem={item as IShop} />}
           />
         </>
       )}

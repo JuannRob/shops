@@ -1,6 +1,6 @@
-import { FontAwesome, Entypo, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import { Redirect, Tabs } from 'expo-router';
-import { ActivityIndicator, Platform, StyleSheet } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 
 import { useAuth } from '../../contexts/auth.context';
 
@@ -45,5 +45,3 @@ export default function TabLayout() {
     </Tabs>
   );
 }
-
-const styles = StyleSheet.create({});

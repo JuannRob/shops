@@ -43,7 +43,6 @@ export async function getShopById(id: string): Promise<ShopsResponse> {
   const userSnap: DocumentSnapshot = await getDoc(userRef);
   if (userSnap.exists()) {
     const data = userSnap.data() as IShop;
-    console.log('Document data:', userSnap.data());
     return {
       success: true,
       response: data,

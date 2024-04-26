@@ -14,12 +14,11 @@ export default function Options() {
 
   return (
     <View style={styles.container}>
-      <Text>{currentUser?.uid}</Text>
-      <Text>{currentUser?.fullName}</Text>
+      <Text>{currentUser?.displayName}</Text>
       <Text>{currentUser?.email}</Text>
       <Text>{currentUser?.phoneNumber}</Text>
-      <TouchableOpacity onPress={handleLogout} style={styles.loginBtn}>
-        <Text style={styles.loginText}>LOGOUT</Text>
+      <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
+        <Text style={styles.logoutText}>LOGOUT</Text>
       </TouchableOpacity>
     </View>
   );
@@ -29,26 +28,17 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 10,
     flex: 1,
   },
-  productCard: {},
-  errorMsgContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-  },
-  loginBtn: {
-    width: '80%',
+  logoutBtn: {
     backgroundColor: '#eff8ff',
     borderRadius: 25,
     height: 50,
     justifyContent: 'center',
     paddingHorizontal: 25,
-    marginTop: 40,
-    marginBottom: 10,
+    marginTop: 10,
   },
-  loginText: {
+  logoutText: {
     color: '#182c53',
   },
 });
