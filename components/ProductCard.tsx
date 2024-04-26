@@ -6,7 +6,7 @@ interface ItemProps {
   shopItem: IProductEntity;
 }
 
-export default function DetailedShopCard(props: ItemProps) {
+export default function ProductCard(props: ItemProps) {
   const { shopItem } = props;
   return (
     <View style={styles.boxShadow}>
@@ -18,7 +18,11 @@ export default function DetailedShopCard(props: ItemProps) {
           }}
           style={styles.productImg}
         />
-        <Text>{shopItem.title}</Text>
+        <View style={styles.productBody}>
+          <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{shopItem.title}</Text>
+          <Text style={{ fontSize: 15 }}>{shopItem.brand}</Text>
+          <Text style={styles.description}>{shopItem.description}</Text>
+        </View>
       </View>
     </View>
   );
@@ -26,16 +30,27 @@ export default function DetailedShopCard(props: ItemProps) {
 
 const styles = StyleSheet.create({
   productCard: {
-    backgroundColor: 'white',
     flexDirection: 'row',
-    borderRadius: 10,
-    alignItems: 'center',
   },
   productImg: {
-    height: 130,
-    width: 130,
+    height: '100%',
+    width: '30%',
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
+  },
+  productBody: {
+    width: '70%',
+    padding: 10,
+    backgroundColor: 'white',
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    alignItems: 'center',
+  },
+  description: {
+    marginTop: 10,
+    padding: 5,
+    borderWidth: 1,
+    borderColor: 'black',
   },
   boxShadow: {
     borderRadius: 10,

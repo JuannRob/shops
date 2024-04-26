@@ -44,9 +44,6 @@ export default function SignInScreen() {
           }}
         />
       </View>
-      <TouchableOpacity>
-        <Text style={styles.forgotAndSignUpText}>Forgot Password?</Text>
-      </TouchableOpacity>
       <TouchableOpacity onPress={handleLogin} style={styles.loginBtn}>
         <Text style={styles.loginText}>LOGIN </Text>
       </TouchableOpacity>
@@ -54,7 +51,7 @@ export default function SignInScreen() {
         onPress={() => {
           router.push('/(auth)/sign-up');
         }}>
-        <Text style={styles.forgotAndSignUpText}>Signup</Text>
+        <Text style={styles.signupText}>Sign-up</Text>
       </TouchableOpacity>
     </View>
   );
@@ -86,7 +83,7 @@ const styles = StyleSheet.create({
     height: 50,
     color: '#182c53',
   },
-  forgotAndSignUpText: {
+  signupText: {
     color: '#eff8ff',
     fontSize: 14,
   },

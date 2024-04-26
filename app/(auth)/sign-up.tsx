@@ -9,14 +9,12 @@ export default function SignUpScreen() {
   const emailRef = useRef<string>('');
   const passwordRef = useRef<string>('');
   const displayNameRef = useRef<string>('');
-  const phoneNumber = useRef<string>('');
 
   const handleRegister = async () => {
     const { response, success } = await signUp(
       emailRef.current,
       passwordRef.current,
-      displayNameRef.current,
-      phoneNumber.current
+      displayNameRef.current
     );
     if (success) {
       router.replace('/');
@@ -62,26 +60,15 @@ export default function SignUpScreen() {
           }}
         />
       </View>
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.inputText}
-          placeholder="Phone Number"
-          keyboardType={'phone-pad'}
-          placeholderTextColor="#61b7f9"
-          onChangeText={(text) => {
-            phoneNumber.current = text;
-          }}
-        />
-      </View>
 
-      <TouchableOpacity onPress={handleRegister} style={styles.loginBtn}>
-        <Text style={styles.loginText}>REGISTER</Text>
+      <TouchableOpacity onPress={handleRegister} style={styles.signupBtn}>
+        <Text style={styles.signupText}>REGISTER</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
           router.push('/(auth)/sign-in');
         }}>
-        <Text style={styles.forgotAndSignUpText}>Sign-in</Text>
+        <Text style={styles.signin}>Sign-in</Text>
       </TouchableOpacity>
     </View>
   );
@@ -113,11 +100,11 @@ const styles = StyleSheet.create({
     height: 50,
     color: '#182c53',
   },
-  forgotAndSignUpText: {
+  signin: {
     color: '#eff8ff',
     fontSize: 14,
   },
-  loginBtn: {
+  signupBtn: {
     width: '80%',
     backgroundColor: '#eff8ff',
     borderRadius: 25,
@@ -127,7 +114,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 10,
   },
-  loginText: {
+  signupText: {
     color: '#182c53',
   },
 });

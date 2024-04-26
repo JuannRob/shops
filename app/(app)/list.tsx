@@ -1,46 +1,32 @@
-import { useEffect, useState } from 'react';
+import ProductCard from 'components/ProductCard';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { IProductEntity, TApiResponse } from 'ts/interfaces/api.interface';
 
-import { ShopsResponse, getShops } from 'services/db/shop.service';
-import { IShop } from 'ts/interfaces/shop.interface';
+import { useFetch } from '../../hooks/useFetch';
 
 export default function List() {
-  const [shops, setShops] = useState<IShop[]>([]);
+  const data: TApiResponse = useFetch('https://dummyjson.com/products');
 
-  useEffect(() => {
-    const fetchShops = async () => {
-      const shopsResponse: ShopsResponse = await getShops();
-      return shopsResponse;
-    };
-
-    fetchShops()
-      .then((res) => {
-        const shopsArr = res.response as IShop[];
-        console.log(shopsArr);
-        setShops(shopsArr);
-      })
-      .catch((e) => console.log(e));
-  }, []);
+  if (data.error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text>No data found</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      {shops.length === 0 && <ActivityIndicator size="large" color="black" />}
-      {shops.length > 0 && (
+      {data.loading && <ActivityIndicator size="large" color="black" />}
+      {!data.loading && (
         <>
-          <Text style={styles.heading}>DB fetch</Text>
+          <Text style={styles.heading}>API Fetch</Text>
           <FlatList
             showsVerticalScrollIndicator={false}
             ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-            data={shops}
-            keyExtractor={(item) => item.uid}
-            renderItem={({ item }) => (
-              <TouchableOpacity>
-                <Text>{item.name}</Text>
-                <Text>{item.contactInfo}</Text>
-                <Text>{item.description}</Text>
-              </TouchableOpacity>
-            )}
+            data={data.data?.products || []}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => <ProductCard shopItem={item as IProductEntity} />}
           />
         </>
       )}

@@ -1,14 +1,12 @@
 import { useAuth } from 'contexts/auth.context';
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Home() {
   const { currentUser } = useAuth();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.welcome}>Welcome, {currentUser?.fullName}</Text>
+      <Text style={{ fontSize: 20 }}>Welcome, {currentUser?.displayName}</Text>
       <Text>You can start editing your app!</Text>
     </View>
   );
@@ -20,8 +18,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 10,
     flex: 1,
-  },
-  welcome: {
-    fontSize: 20,
   },
 });

@@ -4,7 +4,7 @@ export const storeData = async (key: string, value: string) => {
   try {
     await AsyncStorage.setItem(key, value);
   } catch (error) {
-    console.error('Error al guardar dato:', error);
+    console.error('Error while saving data:', error);
   }
 };
 
@@ -15,7 +15,7 @@ export const getItemFor = async (key: string) => {
       return value;
     }
   } catch (error) {
-    console.error('Error al obtener dato:', error);
+    console.error('Error while getting data:', error);
   }
 };
 
@@ -23,6 +23,6 @@ export const removeItemFor = async (key: string) => {
   try {
     await AsyncStorage.getItem(key);
   } catch (error) {
-    console.error('Error al remover dato:', error);
+    console.error('Error while removing data:', error);
   }
 };
