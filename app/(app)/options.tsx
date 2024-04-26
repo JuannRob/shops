@@ -1,23 +1,23 @@
 import { router } from 'expo-router';
-import { useAuth } from 'hooks/useAuth';
 import { StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import { useAuth } from '../../contexts/auth.context';
+
 export default function Options() {
-  const { user, signOutContext } = useAuth();
+  const { currentUser, signOut } = useAuth();
 
   const handleLogout = async () => {
-    await signOutContext();
+    await signOut();
     router.replace('/');
   };
 
   return (
     <View style={styles.container}>
-      <Text>{user?.uid}</Text>
-      <Text>{user?.displayName}</Text>
-      <Text>{user?.email}</Text>
-      <TouchableOpacity onPress={handleLogout} style={styles.loginBtn}>
-        <Text style={styles.loginText}>LOGOUT</Text>
+      <Text>{currentUser?.displayName}</Text>
+      <Text>{currentUser?.email}</Text>
+      <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
+        <Text style={styles.logoutText}>LOGOUT</Text>
       </TouchableOpacity>
     </View>
   );
@@ -27,26 +27,17 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 10,
     flex: 1,
   },
-  productCard: {},
-  errorMsgContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-  },
-  loginBtn: {
-    width: '80%',
+  logoutBtn: {
     backgroundColor: '#eff8ff',
     borderRadius: 25,
     height: 50,
     justifyContent: 'center',
     paddingHorizontal: 25,
-    marginTop: 40,
-    marginBottom: 10,
+    marginTop: 10,
   },
-  loginText: {
+  logoutText: {
     color: '#182c53',
   },
 });

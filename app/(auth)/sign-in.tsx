@@ -1,16 +1,17 @@
 import { router } from 'expo-router';
-import { useAuth } from 'hooks/useAuth';
 import { useRef } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 
+import { useAuth } from '../../contexts/auth.context';
+
 export default function SignInScreen() {
-  const { signInContext } = useAuth();
+  const { signIn } = useAuth();
 
   const emailRef = useRef<string>('');
   const passwordRef = useRef<string>('');
 
   const handleLogin = async () => {
-    const { response, success } = await signInContext(emailRef.current, passwordRef.current);
+    const { response, success } = await signIn(emailRef.current, passwordRef.current);
     if (success) {
       router.replace('/');
     } else {
@@ -43,9 +44,6 @@ export default function SignInScreen() {
           }}
         />
       </View>
-      <TouchableOpacity>
-        <Text style={styles.forgotAndSignUpText}>Forgot Password?</Text>
-      </TouchableOpacity>
       <TouchableOpacity onPress={handleLogin} style={styles.loginBtn}>
         <Text style={styles.loginText}>LOGIN </Text>
       </TouchableOpacity>
@@ -53,7 +51,7 @@ export default function SignInScreen() {
         onPress={() => {
           router.push('/(auth)/sign-up');
         }}>
-        <Text style={styles.forgotAndSignUpText}>Signup</Text>
+        <Text style={styles.signupText}>Sign-up</Text>
       </TouchableOpacity>
     </View>
   );
@@ -85,7 +83,7 @@ const styles = StyleSheet.create({
     height: 50,
     color: '#182c53',
   },
-  forgotAndSignUpText: {
+  signupText: {
     color: '#eff8ff',
     fontSize: 14,
   },
