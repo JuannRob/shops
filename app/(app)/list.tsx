@@ -1,31 +1,48 @@
-import DetailedShopCard from 'components/DetailedShopCard';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
-import { IProductEntity, TApiResponse } from 'ts/interfaces/api.interface';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import { useFetch } from '../../hooks/useFetch';
+import { ShopsResponse, getShops } from 'services/db/shop.service';
+import { IShop } from 'ts/interfaces/shop.interface';
 
 export default function List() {
-  const data: TApiResponse = useFetch('https://dummyjson.com/products');
+  const [shops, setShops] = useState<IShop[]>([]);
 
-  if (data.error) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text>No se encontraron datos</Text>
-      </View>
-    );
-  }
+  useEffect(() => {
+    const fetchShops = async () => {
+      const shopsResponse: ShopsResponse = await getShops();
+      return shopsResponse;
+    };
+
+    fetchShops()
+      .then((res) => {
+        const shopsArr = res.response as IShop[];
+        console.log(shopsArr);
+        setShops(shopsArr);
+      })
+      .catch((e) => console.log(e));
+  }, []);
 
   return (
     <View style={styles.container}>
-      {data.loading && <ActivityIndicator size="large" color="black" />}
-      {!data.loading && (
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-          data={data.data?.products || []}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => <DetailedShopCard shopItem={item as IProductEntity} />}
-        />
+      {shops.length === 0 && <ActivityIndicator size="large" color="black" />}
+      {shops.length > 0 && (
+        <>
+          <Text style={styles.heading}>DB fetch</Text>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+            data={shops}
+            keyExtractor={(item) => item.uid}
+            renderItem={({ item }) => (
+              <TouchableOpacity>
+                <Text>{item.name}</Text>
+                <Text>{item.contactInfo}</Text>
+                <Text>{item.description}</Text>
+              </TouchableOpacity>
+            )}
+          />
+        </>
       )}
     </View>
   );
@@ -42,5 +59,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
+  },
+  heading: {
+    fontSize: 20,
+    paddingVertical: 10,
   },
 });

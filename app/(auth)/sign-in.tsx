@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { useRef } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 
-import { useAuth } from '../../context/auth.context';
+import { useAuth } from '../../contexts/auth.context';
 
 export default function SignInScreen() {
   const { signIn } = useAuth();

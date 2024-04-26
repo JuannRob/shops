@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import { useAuth } from '../../context/auth.context';
+import { useAuth } from '../../contexts/auth.context';
 
 export default function Options() {
   const { currentUser, signOut } = useAuth();
@@ -15,8 +15,9 @@ export default function Options() {
   return (
     <View style={styles.container}>
       <Text>{currentUser?.uid}</Text>
-      <Text>{currentUser?.displayName}</Text>
+      <Text>{currentUser?.fullName}</Text>
       <Text>{currentUser?.email}</Text>
+      <Text>{currentUser?.phoneNumber}</Text>
       <TouchableOpacity onPress={handleLogout} style={styles.loginBtn}>
         <Text style={styles.loginText}>LOGOUT</Text>
       </TouchableOpacity>

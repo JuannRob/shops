@@ -1,56 +1,15 @@
-import SmallShopCard from 'components/SmallShopCard';
-import { useAuth } from 'context/auth.context';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
-import { IProductEntity, TApiResponse } from 'ts/interfaces/api.interface';
-
-import { useFetch } from '../../hooks/useFetch';
+import { useAuth } from 'contexts/auth.context';
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Home() {
-  const data: TApiResponse = useFetch('https://dummyjson.com/products');
   const { currentUser } = useAuth();
-
-  if (data.error) {
-    return (
-      <View style={styles.errorMsgContainer}>
-        <Text>No se encontraron datos</Text>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>
-      {data.loading && <ActivityIndicator size="large" color="black" />}
-      {!data.loading && (
-        <>
-          <Text>{currentUser?.displayName}</Text>
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
-            data={data.data?.products || []}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <SmallShopCard shopItem={item as IProductEntity} />}
-            horizontal
-          />
-          <View style={styles.separator} />
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
-            data={data.data?.products || []}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <SmallShopCard shopItem={item as IProductEntity} />}
-            horizontal
-          />
-          <View style={styles.separator} />
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
-            data={data.data?.products || []}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <SmallShopCard shopItem={item as IProductEntity} />}
-            horizontal
-          />
-        </>
-      )}
+      <Text style={styles.welcome}>Welcome, {currentUser?.fullName}</Text>
+      <Text>You can start editing your app!</Text>
     </View>
   );
 }
@@ -62,17 +21,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     flex: 1,
   },
-  separator: {
-    height: 1,
-    width: '100%',
-    marginVertical: 15,
-    borderWidth: 1,
-    borderColor: 'gray',
-    backgroundColor: 'gray',
-  },
-  errorMsgContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
+  welcome: {
+    fontSize: 20,
   },
 });

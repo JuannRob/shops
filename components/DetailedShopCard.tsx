@@ -9,35 +9,44 @@ interface ItemProps {
 export default function DetailedShopCard(props: ItemProps) {
   const { shopItem } = props;
   return (
-    <View style={styles.productCard}>
-      <Image
-        key={shopItem.id}
-        source={{
-          uri: shopItem.thumbnail,
-        }}
-        style={{
-          height: 150,
-          width: 150,
-          borderTopLeftRadius: 9,
-          borderBottomLeftRadius: 9,
-        }}
-      />
-      <Text style={styles.cardTitle}>{shopItem.title}</Text>
+    <View style={styles.boxShadow}>
+      <View style={styles.productCard}>
+        <Image
+          key={shopItem.id}
+          source={{
+            uri: shopItem.thumbnail,
+          }}
+          style={styles.productImg}
+        />
+        <Text>{shopItem.title}</Text>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   productCard: {
+    backgroundColor: 'white',
     flexDirection: 'row',
-    borderWidth: 1,
     borderRadius: 10,
-    flexWrap: 'wrap',
+    alignItems: 'center',
   },
-  cardTitle: {
-    //TODO: revisar tamaño del titulo
-    width: '60%',
-    textAlign: 'center',
-    paddingTop: 5,
+  productImg: {
+    height: 130,
+    width: 130,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+  },
+  boxShadow: {
+    borderRadius: 10,
+    borderTopRightRadius: 20,
+    shadowColor: 'black',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.2,
+    elevation: 2,
   },
 });

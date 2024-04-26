@@ -1,4 +1,4 @@
-import { useAuth } from 'context/auth.context';
+import { useAuth } from 'contexts/auth.context';
 import { router } from 'expo-router';
 import { useRef } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
@@ -9,12 +9,14 @@ export default function SignUpScreen() {
   const emailRef = useRef<string>('');
   const passwordRef = useRef<string>('');
   const displayNameRef = useRef<string>('');
+  const phoneNumber = useRef<string>('');
 
   const handleRegister = async () => {
     const { response, success } = await signUp(
       emailRef.current,
       passwordRef.current,
-      displayNameRef.current
+      displayNameRef.current,
+      phoneNumber.current
     );
     if (success) {
       router.replace('/');
@@ -41,6 +43,7 @@ export default function SignUpScreen() {
         <TextInput
           style={styles.inputText}
           inputMode="email"
+          keyboardType="email-address"
           placeholder="Email"
           placeholderTextColor="#61b7f9"
           onChangeText={(text) => {
@@ -56,6 +59,17 @@ export default function SignUpScreen() {
           placeholderTextColor="#61b7f9"
           onChangeText={(text) => {
             passwordRef.current = text;
+          }}
+        />
+      </View>
+      <View style={styles.inputView}>
+        <TextInput
+          style={styles.inputText}
+          placeholder="Phone Number"
+          keyboardType={'phone-pad'}
+          placeholderTextColor="#61b7f9"
+          onChangeText={(text) => {
+            phoneNumber.current = text;
           }}
         />
       </View>

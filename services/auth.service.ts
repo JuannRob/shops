@@ -7,6 +7,8 @@ import {
   AuthError,
 } from 'firebase/auth';
 import { FIREBASE_AUTH } from 'utils/firebase';
+import { saveNewUser } from './db/user.service';
+import { User } from 'firebase/auth';
 
 export interface AuthResult {
   success: boolean;
@@ -34,7 +36,8 @@ export async function signInService(email: string, password: string): Promise<Au
 export async function signUpService(
   email: string,
   password: string,
-  displayName: string
+  displayName: string,
+  phoneNumber: string
 ): Promise<AuthResult> {
   try {
     const res: UserCredential | AuthError = await createUserWithEmailAndPassword(
@@ -43,7 +46,9 @@ export async function signUpService(
       password
     );
 
-    await updateProfile(res.user, { displayName });
+    const user: User = res.user;
+    await updateProfile(user, { displayName });
+    await saveNewUser({ ...user, phoneNumber: phoneNumber });
 
     console.log('Respuesta en signUp: ', res);
     return {
