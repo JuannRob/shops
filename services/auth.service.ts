@@ -9,6 +9,7 @@ import {
 import { FIREBASE_AUTH } from 'utils/firebase';
 import { saveNewUser } from './db/user.service';
 import { User } from 'firebase/auth';
+import { defaultUserAvatar } from 'constants/Media';
 
 export interface AuthResult {
   success: boolean;
@@ -46,7 +47,7 @@ export async function signUpService(
     );
 
     const user: User = res.user;
-    await updateProfile(user, { displayName });
+    await updateProfile(user, { displayName, photoURL: defaultUserAvatar });
     await saveNewUser({ ...user, phoneNumber: phoneNumber });
     return {
       success: true,

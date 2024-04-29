@@ -18,6 +18,7 @@ export default function ShopCard(props: ItemProps) {
             uri: shopItem.avatarURL,
           }}
           style={styles.shopImg}
+          resizeMode="contain"
         />
         <View style={styles.shopBody}>
           <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{shopItem.name}</Text>
@@ -35,12 +36,12 @@ const styles = StyleSheet.create({
   },
   shopImg: {
     height: '100%',
-    width: '30%',
+    width: '35%',
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
   },
   shopBody: {
-    width: '70%',
+    width: '65%',
     padding: 10,
     backgroundColor: 'white',
     borderTopRightRadius: 10,
@@ -48,10 +49,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   description: {
-    marginTop: 10,
-    padding: 5,
+    marginTop: 5,
+    paddingVertical: 3,
+    paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: 'black',
+    textAlign: 'justify',
   },
   boxShadow: {
     borderRadius: 10,

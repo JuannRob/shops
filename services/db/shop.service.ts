@@ -1,16 +1,15 @@
 import {
-  query,
   collection,
-  where,
   getDocs,
   doc,
   getDoc,
   QuerySnapshot,
   DocumentSnapshot,
-  QueryDocumentSnapshot,
+  setDoc,
 } from 'firebase/firestore';
-import { IShop } from 'ts/interfaces/shop.interface';
+import { IShop, IShopFromDB } from 'ts/interfaces/shop.interface';
 import { FIREBASE_DB } from 'utils/firebase';
+import { getValueFromDoc } from './helpers';
 
 export interface ShopsResponse {
   success: boolean;
@@ -22,9 +21,39 @@ const shopsRef = collection(db, 'shops');
 
 export async function getShops(): Promise<any> {
   const shopsSnap: QuerySnapshot = await getDocs(shopsRef);
+
   if (!shopsSnap.empty) {
     const shops: IShop[] = [];
-    shopsSnap.docs.forEach((shop) => shops.push(shop.data() as IShop));
+    const promises: Promise<void>[] = [];
+
+    shopsSnap.docs.forEach((shopDoc) => {
+      const shopData = shopDoc.data() as IShopFromDB;
+      const newShop: IShop = {
+        uid: shopDoc.id,
+        categoryName: '',
+        ownerName: '',
+        name: shopData.name,
+        description: shopData.description,
+        contactInfo: shopData.contactInfo,
+        createdAt: shopData.createdAt,
+        editedAt: shopData.editedAt,
+        location: shopData.location,
+        avatarURL: shopData.avatarURL,
+      };
+
+      const categoryPromise = getValueFromDoc(shopData.categoryRef, 'name')
+        .then((categoryName) => (newShop.categoryName = categoryName))
+        .catch(() => (newShop.categoryName = 'Undefined category'));
+
+      const ownerPromise = getValueFromDoc(shopData.ownerRef, 'fullName')
+        .then((ownerName) => (newShop.ownerName = ownerName))
+        .catch(() => (newShop.ownerName = 'Undefined owner'));
+
+      promises.push(categoryPromise, ownerPromise);
+      shops.push(newShop);
+    });
+
+    await Promise.all(promises);
 
     return {
       success: true,

@@ -17,8 +17,8 @@ export default function List() {
 
     fetchShops()
       .then((res) => {
-        const shopsArr = res.response as IShop[];
-        setShops(shopsArr);
+        const shopsArray = res.response as IShop[];
+        setShops(shopsArray);
       })
       .catch((e) => console.error(e));
   }, []);
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
-    paddingHorizontal: 10,
+    padding: 10,
   },
   errorContainer: {
     alignItems: 'center',
@@ -56,6 +56,6 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 20,
-    paddingVertical: 10,
+    paddingBottom: 10,
   },
 });
