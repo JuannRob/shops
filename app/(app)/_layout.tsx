@@ -3,6 +3,7 @@ import { Redirect, Tabs } from 'expo-router';
 import { ActivityIndicator } from 'react-native';
 
 import { useAuth } from '../../contexts/auth.context';
+import GlobalStyles from 'constants/Styles';
 
 export default function TabLayout() {
   const { currentUser, isLoading } = useAuth();
@@ -19,8 +20,10 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: 'black',
-        tabBarLabelStyle: { paddingVertical: 2 },
-      }}>
+        tabBarShowLabel: false,
+        headerStyle: GlobalStyles.shadow,
+      }}
+      sceneContainerStyle={{ backgroundColor: 'white' }}>
       <Tabs.Screen
         name="index"
         options={{
@@ -29,10 +32,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="list"
+        name="shops"
         options={{
-          title: 'List',
-          tabBarIcon: ({ color }) => <FontAwesome name="list-ul" color={color} size={28} />,
+          headerShown: false,
+          tabBarIcon: ({ color }) => <FontAwesome name="shopping-bag" color={color} size={24} />,
         }}
       />
       <Tabs.Screen

@@ -10,6 +10,7 @@ import { FIREBASE_AUTH } from 'utils/firebase';
 import { saveNewUser } from './db/user.service';
 import { User } from 'firebase/auth';
 import { defaultUserAvatar } from 'constants/Media';
+import { handleError } from 'utils/handleError';
 
 export interface AuthResult {
   success: boolean;
@@ -36,8 +37,7 @@ export async function signInService(email: string, password: string): Promise<Au
 export async function signUpService(
   email: string,
   password: string,
-  displayName: string,
-  phoneNumber: string
+  fullName: string
 ): Promise<AuthResult> {
   try {
     const res: UserCredential | AuthError = await createUserWithEmailAndPassword(
@@ -47,8 +47,13 @@ export async function signUpService(
     );
 
     const user: User = res.user;
-    await updateProfile(user, { displayName, photoURL: defaultUserAvatar });
-    await saveNewUser({ ...user, phoneNumber: phoneNumber });
+    await updateProfile(user, { displayName: fullName, photoURL: defaultUserAvatar });
+    await saveNewUser({
+      uid: user.uid,
+      phoneNumber: '',
+      displayName: fullName,
+      photoURL: defaultUserAvatar,
+    });
     return {
       success: true,
       response: res as UserCredential,
@@ -65,6 +70,47 @@ export async function signOutService(): Promise<void> {
   try {
     signOut(auth);
   } catch (error) {
-    console.error('Sign out error: ', error);
+    handleError(error as Error);
   }
+}
+
+export function formatAuthError(error: AuthError): string {
+  const { code } = error as AuthError;
+  let alertMsg: string = '';
+  switch (code) {
+    case 'auth/invalid-email':
+      alertMsg = 'Invalid email';
+      break;
+    case 'auth/invalid-credential':
+      alertMsg = 'Incorrect email or password';
+      break;
+    case 'auth/user-disabled':
+      alertMsg = 'User disabled';
+      break;
+    case 'auth/user-not-found':
+      alertMsg = 'User not found';
+      break;
+    case 'auth/missing-password':
+      alertMsg = 'Missing password';
+      break;
+    case 'auth/wrong-password':
+      alertMsg = 'Wrong password';
+      break;
+    case 'auth/email-already-in-use':
+      alertMsg = 'Email already in use';
+      break;
+    case 'auth/weak-password':
+      alertMsg = 'Weak password';
+      break;
+    case 'auth/missing-phone-number':
+      alertMsg = 'Missing phone number';
+      break;
+    case 'auth/invalid-phone-number':
+      alertMsg = 'Invalid phone number';
+      break;
+    default:
+      alertMsg = 'Unknown error.\nCheck the information provided';
+  }
+
+  return alertMsg;
 }

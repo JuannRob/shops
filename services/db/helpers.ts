@@ -1,28 +1,35 @@
 import { DocumentReference, DocumentSnapshot, doc, getDoc } from 'firebase/firestore';
+import { FIREBASE_DB } from 'utils/firebase';
+import { handleError } from 'utils/handleError';
 
-export async function getDocFromReference(
-  docRef: DocumentReference
-): Promise<DocumentSnapshot | null> {
+const db = FIREBASE_DB;
+
+export async function fetchDoc(docPath: DocumentReference | string): Promise<DocumentSnapshot> {
+  const docRef: DocumentReference = parseDocPath(docPath);
   try {
-    const doc: DocumentSnapshot = await getDoc(docRef);
-    return doc.exists() ? doc : null;
+    const docSnapshot: DocumentSnapshot = await getDoc(docRef);
+    if (!docSnapshot.exists()) {
+      handleError(`Document at path '${docPath}' does not exist.`);
+    }
+    return docSnapshot;
   } catch (error) {
-    console.error('Error while fetching document:', error);
-    throw error;
+    handleError(error as Error);
   }
 }
 
-export async function getValueFromDoc(docRef: DocumentReference, propName: string): Promise<any> {
+export async function fetchDocValue(
+  docPath: DocumentReference | string,
+  propName: string
+): Promise<any> {
+  const docRef: DocumentReference = parseDocPath(docPath);
   try {
-    const doc = await getDocFromReference(docRef);
-    if (doc !== null && doc.exists()) {
-      return doc.data()[propName];
-    } else {
-      console.error('Document does not exist or is null.');
-      return null;
-    }
+    const doc = await fetchDoc(docRef);
+    return doc.data()![propName];
   } catch (error) {
-    console.error('Error while fetching document:', error);
-    throw error;
+    handleError(error as Error);
   }
+}
+
+function parseDocPath(docPath: DocumentReference | string): DocumentReference {
+  return docPath instanceof DocumentReference ? docPath : doc(db, docPath);
 }

@@ -1,103 +1,64 @@
+import { useState } from 'react';
+import { Text, View, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router';
-import { useRef } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 import { useAuth } from '../../contexts/auth.context';
+import { AuthError } from 'firebase/auth';
+import { formatAuthError } from 'services/auth.service';
+
+import CoolButton from 'components/CoolButton';
+import CoolInput from 'components/CoolInput';
+import GlobalStyles from 'constants/Styles';
+import Colors from '../../constants/Colors';
 
 export default function SignInScreen() {
   const { signIn } = useAuth();
 
-  const emailRef = useRef<string>('');
-  const passwordRef = useRef<string>('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    const { response, success } = await signIn(emailRef.current, passwordRef.current);
+    const { response, success } = await signIn(email, password);
     if (success) {
       router.replace('/');
     } else {
-      Alert.alert(response.toString());
+      Alert.alert(formatAuthError(response as AuthError));
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}> Login Screen</Text>
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.inputText}
-          inputMode="email"
-          placeholder="Email"
-          placeholderTextColor="#61b7f9"
-          onChangeText={(text) => {
-            emailRef.current = text;
-          }}
-        />
-      </View>
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.inputText}
-          secureTextEntry
-          placeholder="Password"
-          placeholderTextColor="#61b7f9"
-          onChangeText={(text) => {
-            passwordRef.current = text;
-          }}
-        />
-      </View>
-      <TouchableOpacity onPress={handleLogin} style={styles.loginBtn}>
-        <Text style={styles.loginText}>LOGIN </Text>
-      </TouchableOpacity>
+    <View style={GlobalStyles.container}>
+      <Text style={{ fontWeight: 'bold', fontSize: 50, marginBottom: 40 }}> Sign in </Text>
+      <CoolInput
+        setValue={setEmail}
+        inputProps={{
+          placeholder: 'Email',
+          inputMode: 'email',
+          keyboardType: 'email-address',
+          autoComplete: 'email',
+          autoCapitalize: 'none',
+          returnKeyType: 'next',
+        }}
+      />
+      <CoolInput
+        setValue={setPassword}
+        inputProps={{
+          placeholder: 'Password',
+          inputMode: 'text',
+          keyboardType: 'default',
+          autoComplete: 'current-password',
+          autoCapitalize: 'none',
+          secureTextEntry: true,
+          returnKeyType: 'done',
+        }}
+      />
+      <CoolButton onPressFn={handleLogin}>LOGIN</CoolButton>
       <TouchableOpacity
         onPress={() => {
           router.push('/(auth)/sign-up');
         }}>
-        <Text style={styles.signupText}>Sign-up</Text>
+        <Text style={[GlobalStyles.defaultText, { color: Colors.light.text }]}>Sign-up</Text>
       </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#94d2fc',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 50,
-    color: '#182c53',
-    marginBottom: 40,
-  },
-  inputView: {
-    width: '80%',
-    backgroundColor: '#c0e2fd',
-    borderRadius: 25,
-    height: 50,
-    marginBottom: 20,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  inputText: {
-    height: 50,
-    color: '#182c53',
-  },
-  signupText: {
-    color: '#eff8ff',
-    fontSize: 14,
-  },
-  loginBtn: {
-    width: '80%',
-    backgroundColor: '#eff8ff',
-    borderRadius: 25,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 40,
-    marginBottom: 10,
-  },
-  loginText: {
-    color: '#182c53',
-  },
-});

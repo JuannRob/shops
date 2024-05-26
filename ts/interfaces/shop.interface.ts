@@ -1,26 +1,26 @@
-import { DocumentReference } from 'firebase/firestore';
+import { Timestamp } from 'firebase/firestore';
 
 export interface IShopFromDB {
-  name: string;
-  description: string;
-  categoryRef: DocumentReference;
-  contactInfo: string;
-  createdAt: Date;
-  editedAt: Date;
-  ownerRef: DocumentReference;
-  location: { latitude: number; longitude: number };
   avatarURL: string;
+  categoryRef: string;
+  contactInfo: string;
+  createdAt: Timestamp;
+  description: string;
+  editedAt: Timestamp;
+  location: [string, string];
+  name: string;
+  ownerRef: string;
 }
 
 export interface IShop {
-  uid: string;
-  name: string;
-  description: string;
+  avatarURL: string;
   categoryName: string;
   contactInfo: string;
   createdAt: Date;
+  description: string;
   editedAt: Date;
+  location: [string, string];
+  name: string;
   ownerName: string;
-  location: { latitude: number; longitude: number };
-  avatarURL: string;
+  uid: string;
 }

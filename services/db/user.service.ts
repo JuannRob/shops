@@ -1,35 +1,27 @@
 import { FIREBASE_DB } from 'utils/firebase';
-import { collection, doc, setDoc } from 'firebase/firestore';
+import { DocumentSnapshot, collection, doc, getDoc, setDoc } from 'firebase/firestore';
 import { IFirestoreUser } from 'ts/interfaces/user.interface';
-import { User } from 'firebase/auth';
-
-export interface UserResponse {
-  success: boolean;
-  response: IFirestoreUser | any;
-}
+import { handleError } from 'utils/handleError';
 
 const db = FIREBASE_DB;
 const usersRef = collection(db, 'users');
 
-export async function saveNewUser(user: User): Promise<UserResponse> {
-  const formattedUser: IFirestoreUser = {
-    uid: user.uid,
-    fullName: user.displayName ?? null,
-    email: user.email ?? null,
-    emailVerified: false,
-    phoneNumber: user.phoneNumber ?? null,
-    photoURL: user.photoURL ?? null,
-  };
+export async function saveNewUser(user: IFirestoreUser): Promise<void> {
   try {
-    const res: any = await setDoc(doc(usersRef, user.uid), formattedUser);
-    return {
-      success: true,
-      response: res as IFirestoreUser,
-    };
+    await setDoc(doc(usersRef, user.uid), user);
   } catch (error) {
-    return {
-      success: false,
-      response: error as any,
-    };
+    handleError(error as Error);
+  }
+}
+
+export async function getUserById(id: string): Promise<IFirestoreUser> {
+  try {
+    const userRef = doc(usersRef, id);
+    const userSnap: DocumentSnapshot = await getDoc(userRef);
+    const userData = userSnap.data() as IFirestoreUser;
+
+    return userData;
+  } catch (error) {
+    handleError(error as Error);
   }
 }

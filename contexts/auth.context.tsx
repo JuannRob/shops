@@ -1,18 +1,15 @@
-import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { removeItemFor, storeData } from 'services/storage.service';
 import { signInService, signUpService, signOutService, AuthResult } from '../services/auth.service';
+import { getUserById } from 'services/db/user.service';
+import { IUser } from 'ts/interfaces/user.interface';
+import { handleError } from 'utils/handleError';
 
 interface AuthContextProps {
-  currentUser: User | null;
+  currentUser: IUser | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<AuthResult>;
-  signUp: (
-    email: string,
-    password: string,
-    displayName: string,
-    phoneNumber: string
-  ) => Promise<AuthResult>;
+  signUp: (email: string, password: string, fullName: string) => Promise<AuthResult>;
   signOut: () => Promise<void>;
 }
 
@@ -25,7 +22,7 @@ export const useAuth = () => {
   const authContext = useContext(AuthContext);
 
   if (!authContext) {
-    throw new Error('useAuth must be used within an AuthContextProvider');
+    handleError('useAuth must be used within an AuthContextProvider');
   }
 
   return authContext;
@@ -34,22 +31,23 @@ export const useAuth = () => {
 const auth = getAuth();
 export const Provider = (props: ProviderProps) => {
   const [userState, setUserState] = useState({
-    currentUser: null as User | null,
+    currentUser: null as IUser | null,
     isLoading: true,
   });
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser: User | null) => {
-      if (currentUser !== null) {
-        //TODO: Acá meter un fetch del user actual y guardar en context la versión de firestore
-        storeData('userCredential', JSON.stringify(currentUser));
+    const unsubscribe = onAuthStateChanged(auth, (authUser) => {
+      if (authUser) {
+        // authUser's interface is incorrect in Firebase
+        // @ts-ignore
         setUserState((prevState) => ({
           ...prevState,
-          currentUser: currentUser as User,
+          currentUser: authUser,
           isLoading: false,
         }));
+
+        updateUserdata(authUser.uid);
       } else {
-        removeItemFor('userCredential');
         setUserState((prevState) => ({
           ...prevState,
           currentUser: null,
@@ -59,7 +57,15 @@ export const Provider = (props: ProviderProps) => {
     });
 
     return unsubscribe;
-  }, [userState.currentUser]);
+  }, []);
+
+  async function updateUserdata(uid: string) {
+    const { phoneNumber, displayName, photoURL } = await getUserById(uid);
+    setUserState((prevState) => ({
+      ...prevState,
+      currentUser: { ...prevState.currentUser!, phoneNumber, displayName, photoURL },
+    }));
+  }
 
   return (
     <AuthContext.Provider
@@ -69,7 +75,7 @@ export const Provider = (props: ProviderProps) => {
         signUp: signUpService,
         signOut: signOutService,
       }}>
-      {!userState.isLoading && props.children}
+      {props.children}
     </AuthContext.Provider>
   );
 };

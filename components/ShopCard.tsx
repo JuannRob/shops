@@ -1,52 +1,65 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
-
+import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
+import { Link } from 'expo-router';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { IShop } from '../ts/interfaces/shop.interface';
-
+import GlobalStyles from 'constants/Styles';
 interface ItemProps {
   shopItem: IShop;
 }
 
-export default function ShopCard(props: ItemProps) {
+const windowWidth = Dimensions.get('window').width;
+
+const ShopCard = (props: ItemProps) => {
   const { shopItem } = props;
   return (
-    <View style={styles.boxShadow}>
-      <View style={styles.shopCard}>
+    <Link
+      href={{
+        pathname: '/(app)/shops/detail',
+        params: { id: shopItem.uid },
+      }}
+      asChild>
+      <TouchableOpacity
+        style={{
+          ...GlobalStyles.shadow,
+          backgroundColor: 'white',
+          flexDirection: 'row',
+          borderRadius: 10,
+        }}>
         <Image
           key={shopItem.uid}
           source={{
             uri: shopItem.avatarURL,
           }}
           style={styles.shopImg}
-          resizeMode="contain"
+          resizeMode="cover"
         />
         <View style={styles.shopBody}>
-          <Text style={{ fontSize: 17, fontWeight: 'bold' }}>{shopItem.name}</Text>
-          <Text style={{ fontSize: 15 }}>{shopItem.contactInfo}</Text>
+          <Text style={GlobalStyles.defaultText}>{shopItem.name}</Text>
           <Text style={styles.description}>{shopItem.description}</Text>
         </View>
-      </View>
-    </View>
+      </TouchableOpacity>
+    </Link>
   );
-}
+};
+export default ShopCard;
 
 const styles = StyleSheet.create({
-  shopCard: {
-    flexDirection: 'row',
-  },
   shopImg: {
-    height: '100%',
-    width: '35%',
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
+    width: windowWidth * 0.25,
+    height: '100%',
+    aspectRatio: 1,
   },
   shopBody: {
-    width: '65%',
-    padding: 10,
-    backgroundColor: 'white',
+    flex: 1,
+    width: windowWidth * 0.6,
+    paddingHorizontal: 10,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   description: {
     marginTop: 5,
@@ -54,18 +67,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: 'black',
-    textAlign: 'justify',
-  },
-  boxShadow: {
-    borderRadius: 10,
-    borderTopRightRadius: 20,
-    shadowColor: 'black',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.2,
-    elevation: 2,
   },
 });
