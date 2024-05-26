@@ -3,7 +3,6 @@
     "name": "emprende-conecta",
     "slug": "emprende-conecta",
     "version": "1.0.0",
-
     "scheme": "emprende-conecta",
     "web": {
       "bundler": "metro",
@@ -13,17 +12,15 @@
     "plugins": ["expo-router"],
     "experiments": {
       "typedRoutes": true,
-
       "tsconfigPaths": true
     },
-
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/shop-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/shop-splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#fff"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -31,8 +28,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/adapt-icon.png",
+        "backgroundColor": "#fff"
       }
     }
   }

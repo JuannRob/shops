@@ -1,120 +1,74 @@
-import { useAuth } from 'contexts/auth.context';
+import { useState } from 'react';
+import { Text, View, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router';
-import { useRef } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { useAuth } from 'contexts/auth.context';
+import { formatAuthError } from 'services/auth.service';
+import { AuthError } from 'firebase/auth';
+
+import GlobalStyles from 'constants/Styles';
+
+import CoolButton from 'components/CoolButton';
+import CoolInput from 'components/CoolInput';
 
 export default function SignUpScreen() {
   const { signUp } = useAuth();
 
-  const emailRef = useRef<string>('');
-  const passwordRef = useRef<string>('');
-  const displayNameRef = useRef<string>('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleRegister = async () => {
-    const { response, success } = await signUp(
-      emailRef.current,
-      passwordRef.current,
-      displayNameRef.current
-    );
+    const { response, success } = await signUp(email, password, name);
     if (success) {
       router.replace('/');
     } else {
-      Alert.alert(response.toString());
+      Alert.alert(formatAuthError(response as AuthError));
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Register Screen</Text>
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.inputText}
-          inputMode="text"
-          placeholder="Display Name"
-          placeholderTextColor="#61b7f9"
-          onChangeText={(text) => {
-            displayNameRef.current = text;
-          }}
-        />
-      </View>
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.inputText}
-          inputMode="email"
-          keyboardType="email-address"
-          placeholder="Email"
-          placeholderTextColor="#61b7f9"
-          onChangeText={(text) => {
-            emailRef.current = text;
-          }}
-        />
-      </View>
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.inputText}
-          secureTextEntry
-          placeholder="Password"
-          placeholderTextColor="#61b7f9"
-          onChangeText={(text) => {
-            passwordRef.current = text;
-          }}
-        />
-      </View>
-
-      <TouchableOpacity onPress={handleRegister} style={styles.signupBtn}>
-        <Text style={styles.signupText}>REGISTER</Text>
-      </TouchableOpacity>
+    <View style={GlobalStyles.container}>
+      <Text style={{ fontWeight: 'bold', fontSize: 50, marginBottom: 40 }}>Register now</Text>
+      <CoolInput
+        setValue={setName}
+        inputProps={{
+          placeholder: 'Display name',
+          inputMode: 'text',
+          autoComplete: 'name',
+          autoCapitalize: 'words',
+          returnKeyType: 'next',
+        }}
+      />
+      <CoolInput
+        setValue={setEmail}
+        inputProps={{
+          placeholder: 'Email',
+          inputMode: 'email',
+          keyboardType: 'email-address',
+          autoComplete: 'email',
+          autoCapitalize: 'none',
+          returnKeyType: 'next',
+        }}
+      />
+      <CoolInput
+        setValue={setPassword}
+        inputProps={{
+          placeholder: 'Password',
+          inputMode: 'text',
+          keyboardType: 'default',
+          autoComplete: 'new-password',
+          autoCapitalize: 'none',
+          secureTextEntry: true,
+          returnKeyType: 'next',
+        }}
+      />
+      <CoolButton onPressFn={handleRegister}>REGISTER</CoolButton>
       <TouchableOpacity
         onPress={() => {
           router.push('/(auth)/sign-in');
         }}>
-        <Text style={styles.signin}>Sign-in</Text>
+        <Text style={GlobalStyles.defaultText}>Sign-in</Text>
       </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#94d2fc',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 50,
-    color: '#182c53',
-    marginBottom: 40,
-  },
-  inputView: {
-    width: '80%',
-    backgroundColor: '#c0e2fd',
-    borderRadius: 25,
-    height: 50,
-    marginBottom: 20,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  inputText: {
-    height: 50,
-    color: '#182c53',
-  },
-  signin: {
-    color: '#eff8ff',
-    fontSize: 14,
-  },
-  signupBtn: {
-    width: '80%',
-    backgroundColor: '#eff8ff',
-    borderRadius: 25,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 40,
-    marginBottom: 10,
-  },
-  signupText: {
-    color: '#182c53',
-  },
-});
