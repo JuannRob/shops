@@ -7,6 +7,7 @@ import {
   AuthError,
 } from 'firebase/auth';
 import { FIREBASE_AUTH } from 'utils/firebase';
+import { saveNewUser } from './db/user.service';
 import { User } from 'firebase/auth';
 import { defaultUserAvatar } from 'constants/Media';
 import { handleError } from 'utils/handleError';
