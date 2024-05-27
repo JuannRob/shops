@@ -1,4 +1,4 @@
-# React Native w/Firebase Boilerplate
+# React Native + Firebase Boilerplate
 - Typescript
 - Expo
 - Firebase Auth & Firestore 
