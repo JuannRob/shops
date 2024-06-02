@@ -1,5 +1,5 @@
 {
-  "name": "emprende-conecta",
+  "name": "shops",
   "version": "1.0.0",
   "scripts": {
     "android": "expo start --android",

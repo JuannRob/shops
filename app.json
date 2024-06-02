@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "emprende-conecta",
-    "slug": "emprende-conecta",
+    "name": "shops",
+    "slug": "shops",
     "version": "1.0.0",
-    "scheme": "emprende-conecta",
+    "scheme": "shops",
     "web": {
       "bundler": "metro",
       "output": "static",
