@@ -1,6 +1,7 @@
 node_modules/
 .expo/
 dist/
+eas.json
 npm-debug.*
 *.jks
 *.p8
@@ -22,3 +23,5 @@ expo-env.d.ts
 .metro-health-check*
 
 .vscode
+
+eas.json

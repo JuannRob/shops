@@ -24,12 +24,22 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.shops"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adapt-icon.png",
         "backgroundColor": "#fff"
+      },
+      "package": "com.shops"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "bede2be8-6daa-4010-8dc5-2c9554c7cf59"
       }
     }
   }
